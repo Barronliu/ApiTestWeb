@@ -21,14 +21,14 @@
                             class="upload-demo"
                             :action="this.$api.fileUploadingApi"
                             :show-file-list='false'
-                            :on-success="getFileAddress">
+                            :on-success="getFileAddress1">
                         <el-button size="small" type="primary">点击上传</el-button>
                     </el-upload>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button size="small" @click="importApiData.importApiStatus = false">取 消</el-button>
-                <el-button type="primary" size="small" @click.native="importCase()">确 定</el-button>
+                <el-button type="primary" size="small" @click.native="importCase1()">确 定</el-button>
             </div>
         </el-dialog>
     </div>
@@ -57,7 +57,7 @@
                 this.importApiData.importApiAddress = null;
                 this.importApiData.importApiStatus = true
             },
-            getFileAddress(response, file) {
+            getFileAddress1(response, file) {
                 if (response['status'] === 0) {
                     // this.$message({
                     //     showClose: true,
@@ -97,11 +97,12 @@
                 }
 
             },
-            importCase() {
+            importCase1() {
                 this.$axios.post(this.$api.importApiApi, {
                     'importApiAddress': this.importApiData.importApiAddress,
                     'projectName': this.projectName,
-                    'moduleId': this.moduleData.moduleId,
+                    'moduleId': this.form.module.moduleId,
+                    //'moduleId': this.moduleData.moduleId,
                     'importFormat': this.importApiData.importFormat,
                 }).then((response) => {
                         if (this.messageShow(this, response)) {
