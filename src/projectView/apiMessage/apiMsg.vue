@@ -42,18 +42,18 @@
 
             <el-form-item>
                 <el-button type="primary" icon="el-icon-search" @click.native="handleCurrentChange(1)">搜索</el-button>
-                <el-button type="primary" @click.native="initData()">录入接口</el-button>
-                <el-button type="primary" @click.native="showImportApi()">导入接口</el-button>
-                <el-button type="primary" @click.native="apiTest(apiMsgList)">测试
+                <el-button type="primary" @click.native="initData()">新增</el-button>
+                <el-button type="primary" @click.native="showImportApi()">导入</el-button>
+                <el-button type="primary" @click.native="apiTest(apiMsgList)">运行
                 </el-button>
 
-                <el-button type="primary" icon="el-icon-view" @click.native="$refs.resultFunc.lastResult()">{{null}}
+                <el-button type="primary" icon="el-icon-view" @click.native="$refs.resultFunc.lastResult()">结果
                 </el-button>
                 <!--                <el-button type="primary" @click.native="$refs.importApiFunc.initData()">导入信息</el-button>-->
-                <el-button type="primary"
+                <!-- <el-button type="primary"
                            v-if="form.configId !== null && form.configId !== '' "
-                           @click.native="$refs.configEditFunc.editSceneConfig(form.configId)">配置修改
-                </el-button>
+                           @click.native="$refs.configEditFunc.editSceneConfig(form.configId)">修改配置
+                </el-button>-->
             </el-form-item>
         </el-form>
         <el-tabs v-model="numTab" class="table_padding" @tab-click="tabChange">

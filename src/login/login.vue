@@ -32,7 +32,8 @@
                                     </el-input>
                                 </el-form-item>
                                 <el-form-item>
-                                    <el-input type="password" v-model="password" placeholder="密码">
+                                    <!--添加enter登录功能@keyup.enter.native="login()，by Barron-->
+                                    <el-input type="password" v-model="password" @keyup.enter.native="login()" placeholder="密码">
                                         <i slot="prepend" class="my-icon-jianpan"></i>
                                     </el-input>
                                 </el-form-item>
