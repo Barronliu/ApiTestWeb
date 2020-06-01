@@ -638,8 +638,8 @@
                         this.apiMsgData.validate = response.data['data']['validate'];
                         this.apiMsgData.method = response.data['data']['method'];
                         this.form.choiceUrl = this.proUrlData[this.projectId][response.data['data']['status_url']];
-                        this.form.projectId = this.projectId;
-                        this.form.moduleId = this.proModelData[this.projectId][0].moduleId;
+                        this.form.projectId = response.data['data']['project_id'];//修复bug
+                        this.form.moduleId = response.data['data']['module_id'];//修复模块名带不过去的bug，从接口响应中解析对应的项目ID和模块ID
                     }
                 );
             },

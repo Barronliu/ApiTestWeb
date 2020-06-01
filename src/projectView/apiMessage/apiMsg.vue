@@ -42,8 +42,8 @@
 
             <el-form-item>
                 <el-button type="primary" icon="el-icon-search" @click.native="handleCurrentChange(1)">搜索</el-button>
-                <el-button type="primary" @click.native="initData()">录入接口信息</el-button>
-                <el-button type="primary" @click.native="showImportApi()">导入接口信息</el-button>
+                <el-button type="primary" @click.native="initData()">录入接口</el-button>
+                <el-button type="primary" @click.native="showImportApi()">导入接口</el-button>
                 <el-button type="primary" @click.native="apiTest(apiMsgList)">测试
                 </el-button>
 
