@@ -27,13 +27,14 @@
                         <el-card shadow="never">
                             <el-form ref="loginForm" label-position="top" size="default">
                                 <el-form-item>
-                                    <el-input type="text" v-model="account" placeholder="用户名">
+                                    <!--添加按enter键自动定位导密码输入框@blur="nextInput()" @keyup.enter.native="nextInput($event)，by barron-->
+                                    <el-input type="text" v-model="account" placeholder="用户名" @blur="nextInput()" @keyup.enter.native="nextInput($event)">
                                         <i slot="prepend" class="my-icon-yonghu"></i>
                                     </el-input>
                                 </el-form-item>
                                 <el-form-item>
                                     <!--添加enter登录功能@keyup.enter.native="login()，by Barron-->
-                                    <el-input type="password" v-model="password" @keyup.enter.native="login()" placeholder="密码">
+                                    <el-input type="password" ref="password" v-model="password" @keyup.enter.native="login()" placeholder="密码">
                                         <i slot="prepend" class="my-icon-jianpan"></i>
                                     </el-input>
                                 </el-form-item>
@@ -76,6 +77,14 @@
         },
 
         methods: {
+
+            //用户名输入框按enter键，自动定位导密码输入框，by barron
+            nextInput (event){
+                if (event) {
+                event.target.blur()
+                this.$refs.password.focus()
+                }
+            },
 
             login() {
                 this.$axios.post(this.$api.loginApi, {
