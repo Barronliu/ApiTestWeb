@@ -65,9 +65,17 @@
 </template>
 
 <script>
+    import {setCookie,getCookie} from '../assets/js/cookie.js'
     import * as types from '../store/types'
 
     export default {
+        //add by barron,设置cookie
+        mounted(){
+            /*页面挂载获取cookie，如果存在username的cookie，则跳转到项目管理页，不需登录*/
+            if(getCookie('username')){
+                this.$router.push('/manage/projectManage')
+            }
+        },
         data() {
             return {
                 token: '',
@@ -107,9 +115,12 @@
                                 // console.log(this.$store.state.userName)
                                 this.$store.commit(types.USERNAME, response.data['name']);
                                 this.$store.commit('userName', response.data['name']);
-
                                 let redirect = decodeURIComponent(this.$route.query.redirect || '/manage/projectManage');
-                                this.$router.push({path: redirect})
+                                //this.$router.push({path: redirect});
+                                //add by barron,登录成功后设置cookie
+                                setCookie('username',this.account,1000*60);
+                                setTimeout(function(){
+                                    this.$router.push({path: redirect})}.bind(this),1000);
                             }
                         }
                     }

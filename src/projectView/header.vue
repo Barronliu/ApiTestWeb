@@ -61,6 +61,7 @@
 
 <script>
     import * as types from '../store/types'
+    import {getCookie, delCookie} from '../assets/js/cookie.js'
 
     export default {
 
@@ -112,6 +113,8 @@
                             }
                             else {
                                 this.tableData = response.data['msg'];
+                                //add by barron,删除cookie
+                                delCookie('username');
                             }
                         }
                     );
@@ -178,7 +181,16 @@
         },
         mounted() {
             this.getTitle();
-            this.getUserName()
+            this.getUserName();
+
+            //add by barron,设置cookie
+            /*页面挂载获取保存的cookie值，渲染到页面上*/
+            let uname = getCookie('username');
+            this.name = uname;
+            /*如果cookie不存在，则跳转到登录页*/
+            if(uname == ""){
+                this.$router.push('/login')
+            }
         },
     }
 </script>
