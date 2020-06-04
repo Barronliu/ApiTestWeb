@@ -107,7 +107,7 @@
 
         <el-dialog title="任务配置" :visible.sync="taskData.modelFormVisible" width="42%">
             <el-tabs>
-                <el-tab-pane label="messages" style="margin-top: 10px">
+                <el-tab-pane label="配置任务" style="margin-top: 10px">
                     <el-form>
 
                         <!--<el-form-item label="执行类别" :label-width="taskData.formLabelWidth">-->
@@ -132,7 +132,7 @@
                                        @change="changeSceneChoice"
                                        style="width: 150px;padding-right:5px">
                                 <el-option
-                                        v-for="item in allSetList[this.form.projectName]"
+                                        v-for="item in allSetList[this.form.projectId]"
                                         :key="item.id"
                                         :label="item.label"
                                         :value="item">
@@ -171,7 +171,7 @@
 
                         <el-form-item label="时间配置" :label-width="taskData.formLabelWidth">
                             <el-input v-model="taskData.timeConfig"
-                                      placeholder="second minute hour day month day_of_week(0 0 12 * * ? 每天中午12点触发)">
+                                      placeholder="秒 分 时 天 月 周几(0 0 12 * * * 每天中午12点触发)">
                             </el-input>
                         </el-form-item>
                     </el-form>
