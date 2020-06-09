@@ -604,11 +604,6 @@
             },
         getFileAddress(response, file) {
                 if (response['status'] === 0) {
-                    // this.$message({
-                    //     showClose: true,
-                    //     message: response['msg'],
-                    //     type: 'warning',
-                    // });
                     this.$confirm('服务器已存在相同名字文件，是否覆盖?', '提示', {
                         confirmButtonText: '确定',
                         cancelButtonText: '取消',
@@ -623,7 +618,7 @@
                                     message: response.data['msg'],
                                     type: 'success',
                                 });
-                            this.importApiData.importApiAddress = response['data']['data'];
+                            this.importApiData.importApiAddress = response['data']['data']['file_address'];
                             }
                         );
                     }).catch(() => {
@@ -638,7 +633,7 @@
                             type: 'success',
                         });
                     }
-                    this.importApiData.importApiAddress = response['data'];
+                    this.importApiData.importApiAddress = response['data']['file_address'];
                 }
 
             },

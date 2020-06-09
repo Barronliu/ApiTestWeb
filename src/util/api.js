@@ -58,6 +58,9 @@ const fileUploadingApi = '/api/upload';
 const checkFileApi = '/api/checkFile';
 const importApiApi = '/api/apiMsg/fileChange';
 
+const xmind2testcese = '/api/zentao';
+const downloadFile = '/api/downloadFile';
+
 const findFuncApi = '/api/func/find';
 const createFuncApi = '/api/func/create';
 const checkFuncApi = '/api/func/check';
@@ -137,4 +140,6 @@ export default {
 
     fileUploadingApi,
     importApiApi,
+    xmind2testcese,
+    downloadFile,
 }

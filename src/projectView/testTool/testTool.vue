@@ -3,10 +3,8 @@
         <div style="margin: 10px;padding-left: 10px">
             <el-button type="primary" @click.native="initCase(1)" size="small">测试用例转化</el-button>
             <el-button type="primary" @click.native="initCase(2)" size="small">测试用例转化2</el-button>
-            <el-button type="primary" @click.native="buildIdentity()" size="small">生成身份证12</el-button>
-            <!--<el-button type="primary" size="small" @click.native="dealSql()">执行语句</el-button>-->
-            <!--<el-button type="primary" size="small" @click.native="optimizeError()">错误信息优化显示</el-button>-->
-            <!--<el-button type="primary" size="small" @click.native="sqlData1()">123</el-button>-->
+            <el-button type="primary" @click.native="gen_timestamp()" size="small">生成当前时间戳</el-button>
+            <el-button type="primary" @click.native="xmind2testcaseshow()" size="small">测试用例转换</el-button>
 
         </div>
 
@@ -26,10 +24,10 @@
 <!--                :allow-drag="allowDrag">-->
 <!--        </el-tree>-->
 
-        <el-dialog title="用例转化" :visible.sync="testCase.viewStatus" width="30%">
+        <el-dialog title="用例转化" :visible.sync="xmind2ttestcaseData.xmind2ttestcaseStatus" width="30%">
             <el-form :inline="true" class="demo-form-inline">
                 <el-form-item label="文件地址">
-                    <el-input v-model="testCase.address" size="medium" :disabled="true">
+                    <el-input v-model="xmind2ttestcaseData.xmind2ttestcaseAddress" size="medium" :disabled="true">
                     </el-input>
                 </el-form-item>
                 <el-form-item>
@@ -43,10 +41,35 @@
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button size="small" @click="testCase.viewStatus = false">取 消</el-button>
+                <el-button size="small" @click="xmind2ttestcaseData.xmind2ttestcaseStatus = false">取 消</el-button>
                 <el-button type="primary" size="small" @click.native="initCaseChange()">确 定</el-button>
             </div>
         </el-dialog>
+
+        <el-dialog title="测试用例转换" :visible.sync="xmind2ttestcaseData.xmind2ttestcaseStatus" width="30%">
+            <el-form>
+            </el-form>
+            <el-form :inline="true" class="demo-form-inline">
+                <el-form-item label="文件地址">
+                    <el-input v-model="xmind2ttestcaseData.xmind2ttestcaseAddress" size="medium" :disabled="true">
+                    </el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-upload
+                            class="upload-demo"
+                            :action="this.$api.fileUploadingApi"
+                            :show-file-list='false'
+                            :on-success="getFileAddress">
+                        <el-button size="small" type="primary">点击上传</el-button>
+                    </el-upload>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button size="small" @click="xmind2ttestcaseData.xmind2ttestcaseStatus = false">取 消</el-button>
+                <el-button type="primary" size="small" @click.native="xmind2testcase()">确 定</el-button>
+            </div>
+        </el-dialog>
+
     </div>
 </template>
 
@@ -94,6 +117,11 @@
                     viewStatus: false,
                     address: '',
                 },
+                xmind2ttestcaseData: {
+                    xmind2ttestcaseStatus: false,
+                    xmind2ttestcaseAddress: null,
+                    xmind2ttestcaseFilename:''
+                },
             };
         },
         mounted() {
@@ -136,11 +164,6 @@
         },
         getFileAddress(response, file) {
             if (response['status'] === 0) {
-                // this.$message({
-                //     showClose: true,
-                //     message: response['msg'],
-                //     type: 'warning',
-                // });
                 this.$confirm('服务器已存在相同名字文件，是否覆盖?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
@@ -149,13 +172,15 @@
                     let form = new FormData();
                     form.append("file", file.raw);
                     form.append("skip", '1');
-                    this.$axios.post('/api/upload', form).then((response) => {
+                    this.$axios.post('/api/upload', form).then((resp) => {
                             this.$message({
                                 showClose: true,
-                                message: response.data['msg'],
+                                message: resp.data['msg'],
                                 type: 'success',
                             });
-                            this.testCase.address = response['data']['data'];
+                            this.testCase.address = resp['data']['data']['file_address'];
+                            this.xmind2ttestcaseData.xmind2ttestcaseAddress = resp['data']['data']['file_address'];
+                            this.xmind2ttestcaseData.xmind2ttestcaseFilename = resp['data']['data']['filename'];
                         }
                     );
                 }).catch(() => {
@@ -168,7 +193,9 @@
                         type: 'success',
                     });
                 }
-                this.testCase.address = response['data'];
+                this.testCase.address = response['data']['file_address'];
+                this.xmind2ttestcaseData.xmind2ttestcaseAddress = response['data']['file_address'];
+                this.xmind2ttestcaseData.xmind2ttestcaseFilename = response['data']['filename'];
             }
 
         },
@@ -185,6 +212,74 @@
                         this.showData = response.data['data'];
 
                     }
+                }
+            )
+        },
+        gen_timestamp() {
+                let timestamp = (new Date()).getTime();
+                this.$message({
+                    message: timestamp,
+                    type: 'success'
+                })
+        },
+        xmind2testcaseshow() {
+                this.xmind2ttestcaseData.xmind2ttestcaseStatus = true;
+                this.xmind2ttestcaseData.xmind2ttestcaseAddress = ''
+        },
+        xmind2testcase() {
+            this.$axios.get(this.$api.xmind2testcese, {
+                params: {
+                    'filename': this.xmind2ttestcaseData.xmind2ttestcaseFilename
+                }
+            }).then((response) => {
+                if (response.data['status'] === 1) {
+                    let filename = response.data['data'];
+                    let host = "http://" + response.request['responseURL'].split('/', 3)[2];
+                    let baseurl = this.$api.downloadFile;
+                    let fileparams = 'filename=' + filename;
+                    let url = host + baseurl + '?' + fileparams; //创建下载链接
+                    let link = document.createElement('a');//创建a标签
+                    link.style.display = 'none';//将a标签隐藏
+                    link.href = url; //给a标签添加下载链接
+                    link.setAttribute('download', filename);// 此处注意，要给a标签添加一个download属性，属性值就是文件名称 否则下载出来的文件是没有属性的，空白白
+                    document.body.appendChild(link);
+                    link.click();  //执行a标签
+                    this.xmind2ttestcaseData.xmind2ttestcaseStatus = false;
+                    // this.$axios.get(this.$api.downloadFile, {
+                    //     params: {
+                    //         'filename': filename
+                    //     },
+                    //     responseType: 'blob'
+                    // }).then((resp) => {
+                    //     window.console.debug("resp: ",resp);
+                    //     if (resp.status === 200 && resp.data) {
+                    //         let url = window.URL.createObjectURL(new Blob(resp.data['data'])); //创建下载链接
+                    //         window.console.debug("url: ", url);
+                    //         let link = document.createElement('a');//创建a标签
+                    //         link.style.display = 'none';//将a标签隐藏
+                    //         link.href = url; //给a标签添加下载链接
+                    //         link.setAttribute('download', filename);// 此处注意，要给a标签添加一个download属性，属性值就是文件名称 否则下载出来的文件是没有属性的，空白白
+                    //         document.body.appendChild(link);
+                    //         link.click();  //执行a标签
+                    //         this.xmind2ttestcaseData.xmind2ttestcaseStatus = false;
+                    //     }else{
+                    //         //let enc = new TextDecoder('utf-8');
+                    //         //res = JSON.parse(enc.decode(new Uint8Array(resp.data))); //转化成json对象
+                    //         this.$message({
+                    //         showClose: true,
+                    //         message: "下载失败，请重试1",
+                    //         type: 'warning',
+                    //     });
+                    //     }
+                    // });
+
+                }else{
+                    this.$message({
+                    showClose: true,
+                    message: response.data['msg'],
+                    type: 'warning'
+                });
+            }
                 }
             )
         },
