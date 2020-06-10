@@ -65,8 +65,8 @@
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button size="small" @click="xmind2ttestcaseData.xmind2ttestcaseStatus = false">取 消</el-button>
-                <el-button type="primary" size="small" @click.native="xmind2testcase()">确 定</el-button>
+                <el-button size="small" @click.native="previewcsv()">预 览</el-button>
+                <el-button type="primary" size="small" @click.native="xmind2testcase()">下 载</el-button>
             </div>
         </el-dialog>
 
@@ -226,6 +226,29 @@
                 this.xmind2ttestcaseData.xmind2ttestcaseStatus = true;
                 this.xmind2ttestcaseData.xmind2ttestcaseAddress = ''
         },
+        previewcsv(){
+                let filename = this.xmind2ttestcaseData.xmind2ttestcaseFilename
+                this.$axios.get(this.$api.previewCsvFile,{
+                    params:{
+                        'filename': filename
+                    }
+                }).then((resp) => {
+                    let url = resp.request['responseURL'];
+                    let csvwindow = window.open(url, '_blank');
+                    this.$route.query;
+                    //监听新页面是否被关闭，关闭页面后把弹窗消掉，并删除xmind文件
+                    let that = this;
+                    csvwindow.onload = function(){
+                        csvwindow.onunload = function(){
+                            that.xmind2ttestcaseData.xmind2ttestcaseStatus = false;
+                            that.$axios.post(that.$api.deleteFile,{
+                                'filename': filename
+                            });
+                        }
+
+                    };
+                })
+        },
         xmind2testcase() {
             this.$axios.get(this.$api.xmind2testcese, {
                 params: {
@@ -245,33 +268,15 @@
                     document.body.appendChild(link);
                     link.click();  //执行a标签
                     this.xmind2ttestcaseData.xmind2ttestcaseStatus = false;
-                    // this.$axios.get(this.$api.downloadFile, {
-                    //     params: {
-                    //         'filename': filename
-                    //     },
-                    //     responseType: 'blob'
-                    // }).then((resp) => {
-                    //     window.console.debug("resp: ",resp);
-                    //     if (resp.status === 200 && resp.data) {
-                    //         let url = window.URL.createObjectURL(new Blob(resp.data['data'])); //创建下载链接
-                    //         window.console.debug("url: ", url);
-                    //         let link = document.createElement('a');//创建a标签
-                    //         link.style.display = 'none';//将a标签隐藏
-                    //         link.href = url; //给a标签添加下载链接
-                    //         link.setAttribute('download', filename);// 此处注意，要给a标签添加一个download属性，属性值就是文件名称 否则下载出来的文件是没有属性的，空白白
-                    //         document.body.appendChild(link);
-                    //         link.click();  //执行a标签
-                    //         this.xmind2ttestcaseData.xmind2ttestcaseStatus = false;
-                    //     }else{
-                    //         //let enc = new TextDecoder('utf-8');
-                    //         //res = JSON.parse(enc.decode(new Uint8Array(resp.data))); //转化成json对象
-                    //         this.$message({
-                    //         showClose: true,
-                    //         message: "下载失败，请重试1",
-                    //         type: 'warning',
-                    //     });
-                    //     }
-                    // });
+
+                    //删除xmind文件
+                    this.$axios.post(this.$api.deleteFile,{
+                        'filename': this.xmind2ttestcaseData.xmind2ttestcaseFilename
+                    });
+                    //删除csv文件
+                    this.$axios.post(this.$api.deleteFile,{
+                        'filename': filename
+                    });
 
                 }else{
                     this.$message({

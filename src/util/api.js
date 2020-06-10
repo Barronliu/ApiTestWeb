@@ -60,6 +60,8 @@ const importApiApi = '/api/apiMsg/fileChange';
 
 const xmind2testcese = '/api/zentao';
 const downloadFile = '/api/downloadFile';
+const previewCsvFile = '/api/preview';
+const deleteFile = '/api/deleteFile';
 
 const findFuncApi = '/api/func/find';
 const createFuncApi = '/api/func/create';
@@ -142,4 +144,6 @@ export default {
     importApiApi,
     xmind2testcese,
     downloadFile,
+    previewCsvFile,
+    deleteFile,
 }

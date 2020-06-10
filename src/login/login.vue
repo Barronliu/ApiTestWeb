@@ -89,7 +89,7 @@
             //用户名输入框按enter键，自动定位导密码输入框，by barron
             nextInput (event){
                 if (event) {
-                event.target.blur()
+                event.target.blur();
                 this.$refs.password.focus()
                 }
             },
