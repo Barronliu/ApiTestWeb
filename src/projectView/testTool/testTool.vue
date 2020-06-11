@@ -234,15 +234,21 @@
                     }
                 }).then((resp) => {
                     let url = resp.request['responseURL'];
-                    let csvwindow = window.open(url, '_blank');
+                    let baseName = url.split('=').pop();
+                    let index0 = baseName.lastIndexOf(".");
+                    let csvFileName = baseName.substr(0,index0) + '.csv';
+                    let previewWindow = window.open(url, '_blank');
                     this.$route.query;
-                    //监听新页面是否被关闭，关闭页面后把弹窗消掉，并删除xmind文件
+                    //监听预览页面是否被关闭，关闭页面后把弹窗消掉，并删除xmind文件和csv文件
                     let that = this;
-                    csvwindow.onload = function(){
-                        csvwindow.onunload = function(){
+                    previewWindow.onload = function(){
+                        previewWindow.onunload = function(){
                             that.xmind2ttestcaseData.xmind2ttestcaseStatus = false;
                             that.$axios.post(that.$api.deleteFile,{
                                 'filename': filename
+                            });
+                            that.$axios.post(that.$api.deleteFile,{
+                                'filename': csvFileName
                             });
                         }
 
